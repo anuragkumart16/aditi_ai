@@ -52,7 +52,9 @@ export async function GET(req: NextRequest) {
         })
 
         if (existingUser) {
-            return NextResponse.redirect(new URL("/chat", req.url))
+            const response = NextResponse.redirect(new URL("/chat", req.url))
+            response.cookies.set("user", existingUser.userId)
+            return response
         }
 
         const user = await prisma.user.create({
@@ -63,11 +65,14 @@ export async function GET(req: NextRequest) {
                 userImage: userData.avatar_url,
             }
         })
+
+        const apiresponse = NextResponse.redirect(new URL("/chat", req.url))
+
+        apiresponse.cookies.set("user", user.userId)
+
+        return apiresponse
     } catch (error) {
         return new NextResponse("User creation failed", { status: 500 })
     }
-
-
-    return NextResponse.redirect(new URL("/chat", req.url))
 
 }

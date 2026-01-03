@@ -4,7 +4,7 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma_v2: PrismaClient | undefined;
 };
 
 const prismaClientSingleton = () => {
@@ -21,8 +21,10 @@ const prismaClientSingleton = () => {
   });
 };
 
-export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+const prismaInstance = globalForPrisma.prisma_v2 ?? prismaClientSingleton();
+
+export const prisma = prismaInstance;
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma.prisma_v2 = prisma;
 }

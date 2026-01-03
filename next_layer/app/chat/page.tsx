@@ -1,9 +1,17 @@
 import React from 'react'
+import ChatInterface from './components/ChatInterface'
+import { getUser } from '@/app/actions/auth'
 
-function Chat() {
+import { redirect } from 'next/navigation'
+
+export default async function ChatPage() {
+  const user = await getUser()
+
+  if (!user) {
+    redirect('/auth')
+  }
+
   return (
-    <div>Chat</div>
+    <ChatInterface user={user} />
   )
 }
-
-export default Chat
